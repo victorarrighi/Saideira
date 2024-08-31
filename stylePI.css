@@ -1,0 +1,112 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body {
+
+    opacity: 1;
+    background-image:  url("./assets/texturamesa2.jpg");
+
+}
+main { 
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+}
+
+.menu-mobile-main{
+    cursor: pointer;
+    display: none;
+    filter: invert(98%) sepia(83%) saturate(6956%) hue-rotate(354deg) brightness(105%) contrast(105%);
+    left: 0px;
+    width: 50px;
+    position: absolute;
+    top: 0px;
+    transition: filter 0.1s;
+}
+.menu-mobile:hover{
+    filter: none;
+}  
+
+.conteudo {
+    display: flex;
+    flex-direction: column;
+    align-items:start;
+    gap: 50px;
+    
+    
+}
+.conteudo h1 {
+    color: rgb(255, 255, 255);
+    -webkit-text-stroke: 2px black;
+    font-family:"Paytone One";
+    font-size: 50px;
+    background-color: black;
+    padding: 10px;
+    border-radius: 40px;
+    margin-left: 20px;
+    
+}
+.mesa {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 400px;
+    justify-content: center;
+    gap: 20px;
+    border-radius: 200px;
+    box-shadow: 00px 00px 80px 20px ;
+    background-image: url("/assets/textura-mesa-de-desenhi.png");
+    position: relative;
+    
+    
+}
+.mesa button{
+    background-color: black;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    border: none;
+    padding: 15px 50px;
+    font-size: 16px;
+    font-family: "Paytone One";
+    border-radius: 8px;
+    transition: color 0.5s;
+}
+
+.logobreja {
+    display: flex;
+}
+.cervejamesa {
+    right: 50%;
+    top: -60px;
+    position: absolute;
+}
+.cervejamesa img {
+    width: 200px;
+}
+
+@media (max-width: 1200px) {
+    aside {
+        transform: translateX(-228px);
+        transition: transform 0.9s;
+        z-index: 2;
+    }
+    .menu-mobile-main{
+        display: block;
+        z-index: 9;
+    }
+}
+li {
+    color: rgb(255, 255, 255);
+}
+
+.developedBy{
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+}

@@ -1,0 +1,13 @@
+body {
+    background-image: url("./assets/texturamesa2.jpg");
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+button {
+    background-color: #000;
+    color: rgb(255, 217, 0);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}

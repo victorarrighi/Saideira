@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styleCalcular.css">
+    <title>Saideira</title>
+</head>
+
+<body>
+
+    <h1>Saideira</h1>
+
+    <button id="adicionarItem" onclick="irParaProdutos()">Adicionar Item</button>
+    <button id="limparDados" onclick="limparDados()">Abrir Nova Comanda</button>
+    <button id="AdicionarNovaPessoa" onclick="AdicionarNovaPessoa()">Adicionar Nova Pessoa</button>
+
+    <div id="listaProdutos">
+        <!-- Aqui será exibida a lista de produtos salvos -->
+    </div>
+
+    <div id="totalValue">
+        <!-- Aqui será exibido o valor total -->
+    </div>
+
+    <div id="totalValue10">
+        <!-- Aqui será exibido o valor total com 10% -->
+    </div>
+
+    <div id="partePagar">
+        <!-- Aqui será exibido o valor que cada pessoa deve pagar -->
+    </div>
+
+    <script>
+        function AdicionarNovaPessoa() {
+            window.location.href = 'pessoas.html';
+        }
+
+        function irParaProdutos() {
+            window.location.href = 'produtos.html';
+        }
+
+        function editarProduto(index) {
+            // Redireciona para a página de edição com o índice do produto a ser editado
+            window.location.href = 'produtos.html?edit=' + index;
+        }
+
+        function limparDados() {
+            // Limpa todos os dados salvos no localStorage
+            localStorage.removeItem('itens');
+            // Recarrega a página para refletir as alterações
+            location.reload();
+        }
+
+        function exibirDadosSalvos() {
+            // Recupera os itens salvos do localStorage
+            var itensSalvos = JSON.parse(localStorage.getItem('itens')) || [];
+            var pessoasCadastradas = JSON.parse(localStorage.getItem('listaPessoas')).pessoas || [];
+
+            var listaProdutosDiv = document.getElementById('listaProdutos');
+            listaProdutosDiv.innerHTML = '<h2>Conta:</h2>';
+
+            var totalValue = 0;
+            var partePagar = {};
+
+            for (var i = 0; i < itensSalvos.length; i++) {
+                var produto = itensSalvos[i];
+
+                listaProdutosDiv.innerHTML += 'Nome do Produto: ' + produto.nome + '<br>Valor Total: R$ ' + produto.valorTotal +
+                    ' <button onclick="editarProduto(' + i + ')">Editar</button><br><br>';
+
+                totalValue += parseFloat(produto.valorTotal);
+                totalValue10 = totalValue * 1.1;
+
+                var pessoasCheckbox = produto.pessoas || [];
+                for (var j = 0; j < pessoasCadastradas.length; j++) {
+                    var pessoaNome = pessoasCadastradas[j].nome;
+                    if (pessoasCheckbox.includes(pessoaNome)) {
+                        partePagar[pessoaNome] = (partePagar[pessoaNome] || 0) + (parseFloat(produto.valorTotal) / pessoasCheckbox.length);
+                    }
+                }
+            }
+
+            document.getElementById('totalValue').innerHTML = '<h2>Valor Total de Produtos: R$ ' + totalValue.toFixed(2) + '</h2>';
+            document.getElementById('totalValue10').innerHTML = '<h2>Valor Total de Produtos com 10%: R$ ' + totalValue10.toFixed(2) + '</h2>';
+
+            document.getElementById('partePagar').innerHTML = '<h2>Parte a Pagar por Pessoa:</h2>';
+            for (var k = 0; k < pessoasCadastradas.length; k++) {
+                var pessoaNome = pessoasCadastradas[k].nome;
+                var valorPagar = partePagar[pessoaNome] || 0;
+                var valorPagar10 = valorPagar * 1.1;
+
+                // Adiciona um span com a classe "pagamento-status" para exibir o status de pagamento
+                document.getElementById('partePagar').innerHTML += '<span class="pagamento-status" onclick="exibirPopup(\'' + pessoaNome + '\', ' + valorPagar.toFixed(2) + ', ' + valorPagar10.toFixed(2) + ')">' + pessoaNome + ': R$ ' + valorPagar.toFixed(2) + ' (' + valorPagar10.toFixed(2) + ')</span><br>';
+            }
+        }
+
+        // Função para exibir o popup
+        function exibirPopup(nome, valor, valor10) {
+            var resposta = prompt('O valor de R$ ' + valor.toFixed(2) + ' para ' + nome + ' foi pago?\nDigite "sim" ou "nao"');
+
+            // Verifica a resposta e exibe o status de pagamento
+            if (resposta !== null) {
+                var status = (resposta.toLowerCase() === 'sim') ? 'Pago' : 'Não Pago';
+                alert('Status de pagamento para ' + nome + ': ' + status);
+
+                // Atualiza o status de pagamento exibindo-o junto ao valor
+                var elemento = document.querySelector('.pagamento-status');
+                elemento.innerHTML = nome + ': R$ ' + valor.toFixed(2) + ' (' + valor10.toFixed(2) + ') ' + status + '<br>';
+            }
+        }
+
+        exibirDadosSalvos();
+    </script>
+
+</body>
+
+</html>

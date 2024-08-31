@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saideira</title>
+    <link rel="stylesheet" href="stylePessoas.css">
+</head>
+<body>
+    <h1>Cadastro de Pessoas</h1>
+    <div id="tela"></div>
+
+    <div id="formContatos">
+        <p>Digite o Nome:</p>
+        <input type="text" id="campoNome"><br><br>
+        <button id="btnIncluirContato">Salvar</button>
+        <button id="btnLimparDados">Limpar Dados</button>
+        <button id="index" onclick="ContinuarParaIndex()">Continuar</button>
+    </div>
+
+    <script>
+        function ContinuarParaIndex() {
+            window.location.href = 'pagCalcular.html';
+        }
+
+        function leDados() {
+            let strDados = localStorage.getItem('listaPessoas');
+            let objDados = {};
+
+            if (strDados) {
+                objDados = JSON.parse(strDados);
+            } else {
+                objDados = {
+                    pessoas: []
+                };
+            }
+            return objDados;
+        }
+
+        function salvaDados(dados) {
+            localStorage.setItem('listaPessoas', JSON.stringify(dados));
+        }
+
+        function incluirContato() {
+            // Ler dados do local storage
+            let objDados = leDados();
+
+            // Incluir novo contato
+            let strNome = document.getElementById('campoNome').value;
+            objDados.pessoas.push({ nome: strNome });
+
+            // Salvar os novos dados no local storage
+            salvaDados(objDados);
+
+            // Atualizar os dados
+            imprimeDados();
+        }
+
+        function imprimeDados() {
+            let tela = document.getElementById('tela');
+            let strHtml = '';
+            let objDados = leDados();
+
+            for (let i = 0; i < objDados.pessoas.length; i++) {
+                strHtml += `<p>${objDados.pessoas[i].nome}</p>`;
+            }
+
+            tela.innerHTML = strHtml;
+        }
+
+        function limparDados() {
+            // Limpa todos os dados salvos no localStorage
+            localStorage.removeItem('listaPessoas');
+            // Recarrega a página para refletir as alterações
+            location.reload();
+        }
+
+        // Configura os botões
+        document.getElementById('btnIncluirContato').addEventListener('click', incluirContato);
+        document.getElementById('btnLimparDados').addEventListener('click', limparDados);
+
+        // Chamada para exibir dados ao carregar a página
+        imprimeDados();
+    </script>
+</body>
+</html>

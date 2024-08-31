@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="stylePI.css">
+    <link rel = "icon" href ="./assets/logo.png" type = "image/x-icon"> 
+    <script>
+            function AbrirComanda(){
+                window.location.href = 'pessoas.html';
+            }
+            document.addEventListener('DOMContentLoaded', function() {
+            let menuOpen = false;
+            const menuMobileMain = document.querySelector('.menu-mobile-main');
+            const asideElement = document.querySelector('aside');
+        
+            menuMobileMain.addEventListener('click', function() {
+            if (menuOpen) {
+                asideElement.style.transform = 'translateX(-228px)';
+                menuMobileMain.style.filter = 'invert(98%) sepia(83%) saturate(6956%) hue-rotate(354deg) brightness(105%) contrast(105%)';
+            } else {
+                asideElement.style.transform = 'translateX(0px)';
+                menuMobileMain.style.filter = 'invert(0%) sepia(7%) saturate(7473%) hue-rotate(158deg) brightness(104%) contrast(96%)';
+            }
+            menuOpen = !menuOpen;
+            });
+        });
+    </script>
+    
+    <title>Saideira</title>
+</head>
+
+<body>
+    <main>
+        <img class="menu-mobile-main" src="./assets/cardapio.png" alt="">
+        <div class="conteudo">
+            <h1>
+                <img src="./assets/LOGO-COMPLETA.png">
+            </h1>
+            <div class="mesa">
+                <button onclick="AbrirComanda()">
+                    Abrir Nova Comanda
+                </button>
+                <div class="cervejamesa">
+                    <img src="./assets/cerveja-removebg-preview.png">
+                </div>
+            </div>
+        </div> 
+    </main>
+    <p class="developedBy">Developed by Victor Arrighi</p>
+</body>
+
+</html>

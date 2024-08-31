@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saideira</title>
+    <link rel="stylesheet" href="styleProdutos.css">
+</head>
+
+    <h1>Página de Edição</h1>
+
+    <label for="nomeProduto">Nome do Produto:</label>
+    <input type="text" id="nomeProduto"><br>
+
+    <label for="valorProduto">Valor do Produto:</label>
+    <input type="number" id="valorProduto" step="0.01"><br>
+
+    <label for="quantidade">Quantidade:</label>
+    <input type="number" id="quantidade">
+
+    <br><br>
+    <div id="pessoasCheckbox">
+        <!-- Aqui serão exibidos os checkboxes das pessoas cadastradas -->
+    </div>
+    <br><br>
+    <button onclick="salvarEdicao()">Salvar</button>
+
+    <script>
+        function obterPessoasCadastradas() {
+            var objDados = JSON.parse(localStorage.getItem('listaPessoas')) || { pessoas: [] };
+            return objDados.pessoas;
+        }
+
+        function exibirCheckboxesPessoas() {
+            var pessoasCheckboxDiv = document.getElementById('pessoasCheckbox');
+            var pessoasCadastradas = obterPessoasCadastradas();
+            var strHtml = '';
+
+            for (var i = 0; i < pessoasCadastradas.length; i++) {
+                strHtml += `<input type="checkbox" id="pessoa${i}" value="${pessoasCadastradas[i].nome}">
+                            <label for="pessoa${i}">${pessoasCadastradas[i].nome}</label><br>`;
+            }
+
+            pessoasCheckboxDiv.innerHTML = strHtml;
+        }
+
+        // Função para marcar as pessoas associadas a um produto
+        function marcaPessoasAssociadas(pessoasAssociadas) {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+            checkboxes.forEach(function (checkbox) {
+                if (pessoasAssociadas.includes(checkbox.value)) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+
+        // Função para carregar os detalhes do produto para edição ou criar um novo item
+        function carregarDetalhesProduto() {
+            var parametros = new URLSearchParams(window.location.search);
+            var indiceProduto = parametros.get('edit');
+
+            if (indiceProduto !== null) {
+                // Recupera os itens salvos do localStorage
+                var itensSalvos = JSON.parse(localStorage.getItem('itens')) || [];
+
+                // Verifica se o índice é válido
+                if (indiceProduto >= 0 && indiceProduto < itensSalvos.length) {
+                    var produto = itensSalvos[indiceProduto];
+
+                    // Preenche os campos de edição com os detalhes do produto
+                    document.getElementById('nomeProduto').value = produto.nome;
+                    document.getElementById('valorProduto').value = produto.valorTotal / document.getElementById('quantidade').value;
+                    document.getElementById('quantidade').value = produto.quantidade;
+
+                    // Marca as pessoas associadas ao produto
+                    marcaPessoasAssociadas(produto.pessoas);
+                }
+            }
+        }
+
+        // Chama a função para exibir checkboxes ao carregar a página
+        exibirCheckboxesPessoas();
+
+        // Chama a função ao carregar a página de edição
+        carregarDetalhesProduto();
+
+        function salvarEdicao() {
+            var parametros = new URLSearchParams(window.location.search);
+            var indiceProduto = parametros.get('edit');
+
+            // Recupera os itens salvos do localStorage
+            var itensSalvos = JSON.parse(localStorage.getItem('itens')) || [];
+
+            // Se há um índice válido, é uma edição
+            if (indiceProduto !== null) {
+                // Verifica se o índice é válido
+                if (indiceProduto >= 0 && indiceProduto < itensSalvos.length) {
+                    var produto = itensSalvos[indiceProduto];
+
+                    // Atualiza os detalhes do produto com os novos valores
+                    produto.nome = document.getElementById('nomeProduto').value;
+                    produto.valorTotal = parseFloat(document.getElementById('valorProduto').value) * parseInt(document.getElementById('quantidade').value);
+
+                    // Atualiza as pessoas associadas ao produto
+                    produto.pessoas = obtemPessoasAssociadas();
+
+                    // Atualiza o localStorage com os detalhes do produto editado
+                    localStorage.setItem('itens', JSON.stringify(itensSalvos));
+
+                    // Redireciona de volta para a Página 1 após a edição
+                    window.location.href = 'pagCalcular.html';
+                }
+            } else {
+                // Se não há índice, é uma adição de novo item
+                var nomeProduto = document.getElementById('nomeProduto').value;
+                var valorProduto = parseFloat(document.getElementById('valorProduto').value);
+                var quantidade = parseInt(document.getElementById('quantidade').value);
+
+                if (isNaN(valorProduto) || isNaN(quantidade)) {
+                    alert('Por favor, insira valores válidos para Valor do Produto e Quantidade.');
+                    return;
+                }
+
+                var valorTotal = valorProduto * quantidade;
+
+                // Adiciona o novo item ao array
+                itensSalvos.push({
+                    nome: nomeProduto,
+                    valorTotal: valorTotal.toFixed(2), // Arredonda para duas casas decimais
+                    quantidade: quantidade,
+                    pessoas: obtemPessoasAssociadas()
+                });
+
+                // Atualiza o localStorage com o novo array de itens
+                localStorage.setItem('itens', JSON.stringify(itensSalvos));
+
+                // Redireciona de volta para a Página 1 após a adição
+                window.location.href = 'pagCalcular.html';
+            }
+        }
+
+        // Função para obter as pessoas marcadas nos checkboxes
+        function obtemPessoasAssociadas() {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            var pessoasAssociadas = [];
+
+            checkboxes.forEach(function (checkbox) {
+                pessoasAssociadas.push(checkbox.value);
+            });
+
+            return pessoasAssociadas;
+        }
+    </script>
+
+</body>
+</html>
